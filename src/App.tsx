@@ -25,7 +25,6 @@ class App extends React.Component<{}, IState> {
     }
 
     var file = files[0];
-    for 
     var reader = new FileReader();
     reader.onload = (event: Event) => {
       const result: string | ArrayBuffer | null = (event.target as FileReader)
@@ -37,12 +36,12 @@ class App extends React.Component<{}, IState> {
 
       //this.setState({ imageData: result });
       this.state.imageData.push(result);
+      this.setState({ imageData: this.state.imageData });
     };
     reader.readAsDataURL(file);
-
   };
   render() {
-    const imageData = this.state.imageData;
+    const imageData = this.state.imageData[0];
     let preview: JSX.Element = <></>;
 
     if (imageData != null && typeof imageData === "string") {
