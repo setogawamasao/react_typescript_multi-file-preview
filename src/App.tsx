@@ -2,6 +2,7 @@ import React from "react";
 
 interface IState {
   imageData: string[];
+  fileList: FileList | null;
 }
 
 class App extends React.Component<{}, IState> {
@@ -10,15 +11,18 @@ class App extends React.Component<{}, IState> {
 
     this.state = {
       imageData: [],
+      fileList: null,
     };
   }
 
   onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-
     if (files === null) {
       return;
     }
+
+    files.item;
+    this.setState({ fileList: event.target.files });
 
     if (files.length < 0) {
       return;
