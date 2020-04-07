@@ -1,8 +1,8 @@
 import React from "react";
 
 interface IState {
-  imageData: string[];
-  fileList: FileList | null;
+  imageUrls: string[];
+  value: number;
 }
 
 class App extends React.Component<{}, IState> {
@@ -10,56 +10,69 @@ class App extends React.Component<{}, IState> {
     super(props);
 
     this.state = {
-      imageData: [],
-      fileList: null,
+      imageUrls: [],
+      value: 0,
     };
   }
 
-  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const files = event.target.files;
     if (files === null) {
       return;
     }
 
-    files.item;
-    this.setState({ fileList: event.target.files });
-
     if (files.length < 0) {
       return;
     }
 
-    var file = files[0];
-    var reader = new FileReader();
-    reader.onload = (event: Event) => {
-      const result: string | ArrayBuffer | null = (event.target as FileReader)
-        .result;
-
-      if (typeof result !== "string") {
-        return;
-      }
-
-      //this.setState({ imageData: result });
-      this.state.imageData.push(result);
-      this.setState({ imageData: this.state.imageData });
-    };
-    reader.readAsDataURL(file);
-  };
-  render() {
-    const imageData = this.state.imageData[0];
-    let preview: JSX.Element = <></>;
-
-    if (imageData != null && typeof imageData === "string") {
-      preview = (
-        <div>
-          <img src={imageData} />
-        </div>
-      );
+    for (const file of Array.from(files)) {
+      const result = await this.readFile(file);
+      this.state.imageUrls.push(result);
     }
 
+    this.setState({ imageUrls: this.state.imageUrls });
+  };
+
+  readFile = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      var fr = new FileReader();
+      fr.onload = (event: Event) => {
+        const result: string | ArrayBuffer | null = (event.target as FileReader)
+          .result;
+        if (typeof result === "string") {
+          resolve(result);
+        }
+      };
+      fr.readAsDataURL(file);
+    });
+  };
+
+  reset = (): void => {
+    this.setState({ value: Math.random() });
+    this.setState({ imageUrls: [] });
+  };
+
+  preview = (imageUrl: string): JSX.Element => {
+    return <img src={imageUrl} alt="preview" style={{ width: "25%" }} />;
+  };
+
+  render() {
     return (
       <>
-        <input type="file" onChange={this.onChange} multiple></input>
-        {preview}
+        <input
+          type="file"
+          multiple
+          onChange={this.onChange}
+          key={this.state.value}
+        ></input>
+        <input type="button" value="reset" onClick={this.reset}></input>
+        <div>
+          {this.state.imageUrls.map((imageUrl) => {
+            return this.preview(imageUrl);
+          })}
+        </div>
       </>
     );
   }
