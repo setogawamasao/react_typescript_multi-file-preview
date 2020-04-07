@@ -2,7 +2,7 @@ import React from "react";
 
 interface IState {
   imageUrls: string[];
-  value: number;
+  resetKey: number;
 }
 
 class App extends React.Component<{}, IState> {
@@ -11,7 +11,7 @@ class App extends React.Component<{}, IState> {
 
     this.state = {
       imageUrls: [],
-      value: 0,
+      resetKey: 0,
     };
   }
 
@@ -50,7 +50,7 @@ class App extends React.Component<{}, IState> {
   };
 
   reset = (): void => {
-    this.setState({ value: Math.random() });
+    this.setState({ resetKey: Math.random() });
     this.setState({ imageUrls: [] });
   };
 
@@ -65,7 +65,7 @@ class App extends React.Component<{}, IState> {
           type="file"
           multiple
           onChange={this.onChange}
-          key={this.state.value}
+          key={this.state.resetKey}
         ></input>
         <input type="button" value="reset" onClick={this.reset}></input>
         <div>
