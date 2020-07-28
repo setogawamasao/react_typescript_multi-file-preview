@@ -1,4 +1,5 @@
 import React from "react";
+import Icon from "./times-circle.svg";
 
 interface IState {
   imageUrls: string[];
@@ -54,8 +55,22 @@ class App extends React.Component<{}, IState> {
     this.setState({ imageUrls: [] });
   };
 
-  preview = (imageUrl: string): JSX.Element => {
-    return <img src={imageUrl} alt="preview" style={{ width: "25%" }} />;
+  deleteImage = (id: number) => {
+    this.state.imageUrls.splice(id, 1);
+    this.setState({ imageUrls: this.state.imageUrls });
+  };
+
+  preview = (imageUrl: string, id: number): JSX.Element => {
+    return (
+      <div className="preview">
+        <img src={imageUrl} alt="preview" style={{ width: "100%" }} />
+        <img
+          src={Icon}
+          className="delete-button"
+          onClick={() => this.deleteImage(id)}
+        />
+      </div>
+    );
   };
 
   render() {
@@ -69,8 +84,8 @@ class App extends React.Component<{}, IState> {
         ></input>
         <input type="button" value="reset" onClick={this.reset}></input>
         <div>
-          {this.state.imageUrls.map((imageUrl) => {
-            return this.preview(imageUrl);
+          {this.state.imageUrls.map((imageUrl, id) => {
+            return this.preview(imageUrl, id);
           })}
         </div>
       </>
